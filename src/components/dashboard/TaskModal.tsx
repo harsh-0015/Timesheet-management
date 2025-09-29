@@ -1,4 +1,3 @@
-// src/components/dashboard/TaskModal.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -150,7 +149,7 @@ export function TaskModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Project Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
               Select Project *
               <span className="ml-1 text-gray-400">
                 <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
@@ -161,12 +160,12 @@ export function TaskModal({
             <select
               value={formData.projectName}
               onChange={(e) => handleInputChange('projectName', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 font-medium ${
                 errors.projectName ? 'border-red-300' : 'border-gray-300'
               }`}
             >
               {projectOptions.map(project => (
-                <option key={project} value={project}>
+                <option key={project} value={project} className="text-gray-900 font-normal py-2">
                   {project}
                 </option>
               ))}
@@ -178,7 +177,7 @@ export function TaskModal({
 
           {/* Type of Work */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
               Type of Work *
               <span className="ml-1 text-gray-400">
                 <svg className="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
@@ -189,12 +188,12 @@ export function TaskModal({
             <select
               value={formData.typeOfWork}
               onChange={(e) => handleInputChange('typeOfWork', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 font-medium ${
                 errors.typeOfWork ? 'border-red-300' : 'border-gray-300'
               }`}
             >
               {workTypeOptions.map(type => (
-                <option key={type} value={type}>
+                <option key={type} value={type} className="text-gray-900 font-normal py-2">
                   {type}
                 </option>
               ))}
@@ -206,7 +205,7 @@ export function TaskModal({
 
           {/* Task Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
               Task description *
             </label>
             <textarea
@@ -214,7 +213,7 @@ export function TaskModal({
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Write text here ..."
               rows={4}
-              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none ${
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none bg-white text-gray-900 placeholder-gray-400 ${
                 errors.description ? 'border-red-300' : 'border-gray-300'
               }`}
             />
@@ -226,7 +225,7 @@ export function TaskModal({
 
           {/* Hours */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-900 mb-2">
               Hours *
             </label>
             <div className="flex items-center space-x-3">
@@ -234,9 +233,9 @@ export function TaskModal({
                 type="button"
                 onClick={decrementHours}
                 disabled={formData.hours <= 1}
-                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 font-bold text-lg transition-colors"
               >
-                -
+                −
               </button>
               <input
                 type="number"
@@ -244,7 +243,7 @@ export function TaskModal({
                 onChange={(e) => handleInputChange('hours', parseInt(e.target.value) || 1)}
                 min="1"
                 max="12"
-                className={`w-16 px-2 py-1 border rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                className={`w-20 px-3 py-2 border-2 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 font-semibold text-lg ${
                   errors.hours ? 'border-red-300' : 'border-gray-300'
                 }`}
               />
@@ -252,7 +251,7 @@ export function TaskModal({
                 type="button"
                 onClick={incrementHours}
                 disabled={formData.hours >= 12}
-                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed text-gray-700 font-bold text-lg transition-colors"
               >
                 +
               </button>
@@ -273,7 +272,7 @@ export function TaskModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
+              className="flex-1 bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed font-medium"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
@@ -290,7 +289,7 @@ export function TaskModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="flex-1 bg-gray-200 text-gray-800 py-2.5 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 font-medium"
             >
               Cancel
             </button>

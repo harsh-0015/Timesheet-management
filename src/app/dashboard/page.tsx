@@ -1,4 +1,3 @@
-// src/app/dashboard/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -18,14 +17,22 @@ export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [modalDefaultDate, setModalDefaultDate] = useState<string>('')
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    // Load tasks from localStorage on mount, specific to timesheetId
+    const savedTasks = localStorage.getItem(`tasks_${selectedTimesheet?.id || 'default'}`)
+    return savedTasks ? JSON.parse(savedTasks) : []
+  })
 
   useEffect(() => {
-    if (status === 'loading') return // Still loading
+    if (status === 'loading') return
     if (!session) {
       router.push('/login')
       return
     }
-  }, [session, status, router])
+    // Update tasks when selectedTimesheet changes
+    const savedTasks = localStorage.getItem(`tasks_${selectedTimesheet?.id || 'default'}`)
+    setTasks(savedTasks ? JSON.parse(savedTasks) : [])
+  }, [session, status, router, selectedTimesheet])
 
   const handleSelectTimesheet = (timesheet: TimesheetEntry) => {
     setSelectedTimesheet(timesheet)
@@ -43,59 +50,35 @@ export default function DashboardPage() {
     setIsModalOpen(true)
   }
 
-  const handleDeleteTask = async (taskId: string) => {
+  const handleDeleteTask = (taskId: string) => {
     if (!confirm('Are you sure you want to delete this task?')) {
       return
     }
-
-    try {
-      const response = await fetch(`/api/tasks?id=${taskId}`, {
-        method: 'DELETE',
-      })
-
-      const data = await response.json()
-      if (data.success) {
-        // Task deleted successfully
-        // The list view component will handle removing it from the UI
-      }
-    } catch (error) {
-      console.error('Error deleting task:', error)
-      alert('Failed to delete task. Please try again.')
-    }
+    const newTasks = tasks.filter(task => task.id !== taskId)
+    setTasks(newTasks)
+    localStorage.setItem(`tasks_${selectedTimesheet?.id || 'default'}`, JSON.stringify(newTasks))
   }
 
-  const handleSubmitTask = async (taskData: CreateTaskRequest) => {
-    try {
-      const method = editingTask ? 'PUT' : 'POST'
-      const body = editingTask 
-        ? { ...taskData, id: editingTask.id }
-        : taskData
-
-      const response = await fetch('/api/tasks', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      })
-
-      const data = await response.json()
-      
-      if (data.success) {
-        // Task saved successfully
-        setIsModalOpen(false)
-        setEditingTask(null)
-        // You might want to refresh the data or update the UI
-      } else {
-        throw new Error(data.error || 'Failed to save task')
+  const handleSubmitTask = (taskData: CreateTaskRequest) => {
+    let newTasks: Task[]
+    if (editingTask) {
+      // Edit existing task
+      newTasks = tasks.map(task =>
+        task.id === editingTask.id ? { ...task, ...taskData, id: task.id } : task
+      )
+    } else {
+      // Add new task
+      const newTask: Task = {
+        ...taskData,
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9) // Unique ID
       }
-    } catch (error) {
-      console.error('Error saving task:', error)
-      alert('Failed to save task. Please try again.')
+      newTasks = [...tasks, newTask]
     }
+    setTasks(newTasks)
+    localStorage.setItem(`tasks_${selectedTimesheet?.id || 'default'}`, JSON.stringify(newTasks))
+    // No need for try-catch since it's client-side
   }
 
-  // Show loading state while checking authentication
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -104,7 +87,6 @@ export default function DashboardPage() {
     )
   }
 
-  // If no session, don't render the dashboard (redirect will happen)
   if (!session) {
     return null
   }
@@ -125,6 +107,7 @@ export default function DashboardPage() {
             onAddTask={handleAddTask}
             onEditTask={handleEditTask}
             onDeleteTask={handleDeleteTask}
+            tasks={tasks}
           />
         )}
       </main>

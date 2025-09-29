@@ -1,4 +1,3 @@
-// src/types/timesheet.ts
 export type TimesheetStatus = 'COMPLETED' | 'INCOMPLETE' | 'MISSING';
 
 export interface Task {

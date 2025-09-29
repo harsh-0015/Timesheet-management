@@ -1,4 +1,3 @@
-// src/components/dashboard/TimesheetListView.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -9,37 +8,23 @@ interface TimesheetListViewProps {
   onAddTask: (task: Omit<Task, 'id'>) => void
   onEditTask: (task: Task) => void
   onDeleteTask: (taskId: string) => void
+  tasks: Task[] // New prop to receive tasks from parent
 }
 
 export function TimesheetListView({ 
   selectedTimesheet, 
   onAddTask, 
   onEditTask, 
-  onDeleteTask 
+  onDeleteTask,
+  tasks
 }: TimesheetListViewProps) {
-  const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(false)
   const [editingTask, setEditingTask] = useState<string | null>(null)
-
-  // Mock tasks data based on the selected timesheet
-  const mockTasks: Task[] = selectedTimesheet ? [
-    { id: '1', date: '2025-09-21', projectName: 'Homepage Development', typeOfWork: 'Bug fixes', description: 'Fix layout issues', hours: 4, timesheetId: selectedTimesheet.id },
-    { id: '2', date: '2025-09-22', projectName: 'Homepage Development', typeOfWork: 'Feature development', description: 'Add new feature', hours: 6, timesheetId: selectedTimesheet.id },
-    { id: '3', date: '2025-09-23', projectName: 'Homepage Development', typeOfWork: 'Bug fixes', description: 'Resolve UI bugs', hours: 4, timesheetId: selectedTimesheet.id },
-    { id: '4', date: '2025-09-24', projectName: 'Homepage Development', typeOfWork: 'Testing', description: 'Unit testing', hours: 3, timesheetId: selectedTimesheet.id },
-    { id: '5', date: '2025-09-25', projectName: 'Homepage Development', typeOfWork: 'Documentation', description: 'Update docs', hours: 2, timesheetId: selectedTimesheet.id },
-  ] : []
 
   useEffect(() => {
     if (selectedTimesheet) {
       setLoading(true)
-      // Simulate fetching with mock data
-      setTimeout(() => {
-        setTasks(mockTasks)
-        setLoading(false)
-      }, 500) // Simulate loading delay
-    } else {
-      setTasks([])
+      setTimeout(() => setLoading(false), 500) // Simulate loading
     }
   }, [selectedTimesheet])
 
@@ -58,7 +43,6 @@ export function TimesheetListView({
   const handleTaskAction = (taskId: string, action: 'edit' | 'delete') => {
     if (action === 'delete') {
       onDeleteTask(taskId)
-      setTasks(tasks.filter(task => task.id !== taskId))
     } else if (action === 'edit') {
       setEditingTask(taskId)
     }
