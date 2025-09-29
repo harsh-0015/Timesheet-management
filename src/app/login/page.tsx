@@ -1,4 +1,3 @@
-// src/app/login/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -55,7 +54,7 @@ export default function LoginPage() {
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-8">
-              Welcome back
+              Hello
             </h2>
           </div>
           
