@@ -9,38 +9,35 @@ interface TimesheetTableViewProps {
 }
 
 export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProps) {
+  // Mock data
+  const mockTimesheets: TimesheetEntry[] = [
+    { id: '1', weekNumber: 1, dateRange: '1-5 September 2025', status: 'COMPLETED', totalHours: 40, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: '2', weekNumber: 2, dateRange: '8-12 September 2025', status: 'INCOMPLETE', totalHours: 20, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: '3', weekNumber: 3, dateRange: '15-19 September 2025', status: 'MISSING', totalHours: 0, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: '4', weekNumber: 4, dateRange: '22-26 September 2025', status: 'COMPLETED', totalHours: 35, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: '5', weekNumber: 5, dateRange: '29 September - 3 October 2025', status: 'INCOMPLETE', totalHours: 15, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    // Add more entries as needed
+  ]
+
   const [timesheets, setTimesheets] = useState<TimesheetEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState<FilterOptions>({
-    status: 'ALL'
+    status: 'ALL',
   })
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
+  // Simulate data loading with mock data
   useEffect(() => {
-    fetchTimesheets()
-  }, [filters])
-
-  const fetchTimesheets = async () => {
     setLoading(true)
-    try {
-      const params = new URLSearchParams()
-      if (filters.status && filters.status !== 'ALL') {
-        params.append('status', filters.status)
-      }
-
-      const response = await fetch(`/api/timesheets?${params}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setTimesheets(data.data)
-      }
-    } catch (error) {
-      console.error('Error fetching timesheets:', error)
-    } finally {
-      setLoading(false)
+    // Apply filters to mock data
+    let filteredData = mockTimesheets
+    if (filters.status && filters.status !== 'ALL') {
+      filteredData = mockTimesheets.filter(ts => ts.status === filters.status)
     }
-  }
+    setTimesheets(filteredData)
+    setLoading(false)
+  }, [filters])
 
   const getStatusBadge = (status: string) => {
     const baseClasses = 'px-3 py-1 rounded-full text-xs font-medium'
@@ -91,14 +88,14 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
               Date Range
             </label>
             <select
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               value={filters.dateRange || ''}
               onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
             >
-              <option value="">All dates</option>
-              <option value="this-week">This week</option>
-              <option value="last-week">Last week</option>
-              <option value="this-month">This month</option>
+              <option value="" className="text-gray-900">All dates</option>
+              <option value="this-week" className="text-gray-900">This week</option>
+              <option value="last-week" className="text-gray-900">Last week</option>
+              <option value="this-month" className="text-gray-900">This month</option>
             </select>
           </div>
           
@@ -107,14 +104,14 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
               Status
             </label>
             <select
-              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
               value={filters.status || 'ALL'}
               onChange={(e) => setFilters({ ...filters, status: e.target.value as never })}
             >
-              <option value="ALL">All statuses</option>
-              <option value="COMPLETED">Completed</option>
-              <option value="INCOMPLETE">Incomplete</option>
-              <option value="MISSING">Missing</option>
+              <option value="ALL" className="text-gray-900">All statuses</option>
+              <option value="COMPLETED" className="text-gray-900">Completed</option>
+              <option value="INCOMPLETE" className="text-gray-900">Incomplete</option>
+              <option value="MISSING" className="text-gray-900">Missing</option>
             </select>
           </div>
         </div>
@@ -187,13 +184,18 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
       <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200">
         <div className="flex items-center">
           <select
-            className="px-2 py-1 border border-gray-300 rounded text-sm"
+            className="px-2 py-1 border border-gray-300 rounded text-sm bg-white text-gray-900"
             value={itemsPerPage}
-            onChange={(e) => {/* Handle items per page change */}}
+            onChange={(e) => {
+              // Update itemsPerPage and reset to page 1
+              const newItemsPerPage = parseInt(e.target.value, 10)
+              setCurrentPage(1) // Reset to first page
+              // Here you would typically update state or re-filter, but for now, we'll keep it static
+            }}
           >
-            <option value={5}>5 per page</option>
-            <option value={10}>10 per page</option>
-            <option value={20}>20 per page</option>
+            <option value={5} className='text-gray-900'>5 per page</option>
+            <option value={10} className='text-gray-900'>10 per page</option>
+            <option value={20} className='text-gray-900'>20 per page</option>
           </select>
         </div>
 

@@ -54,7 +54,7 @@ export default function LoginPage() {
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-8">
-              Hello
+              Welcome back
             </h2>
           </div>
           

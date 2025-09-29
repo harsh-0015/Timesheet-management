@@ -21,29 +21,27 @@ export function TimesheetListView({
   const [loading, setLoading] = useState(false)
   const [editingTask, setEditingTask] = useState<string | null>(null)
 
+  // Mock tasks data based on the selected timesheet
+  const mockTasks: Task[] = selectedTimesheet ? [
+    { id: '1', date: '2025-09-21', projectName: 'Homepage Development', typeOfWork: 'Bug fixes', description: 'Fix layout issues', hours: 4, timesheetId: selectedTimesheet.id },
+    { id: '2', date: '2025-09-22', projectName: 'Homepage Development', typeOfWork: 'Feature development', description: 'Add new feature', hours: 6, timesheetId: selectedTimesheet.id },
+    { id: '3', date: '2025-09-23', projectName: 'Homepage Development', typeOfWork: 'Bug fixes', description: 'Resolve UI bugs', hours: 4, timesheetId: selectedTimesheet.id },
+    { id: '4', date: '2025-09-24', projectName: 'Homepage Development', typeOfWork: 'Testing', description: 'Unit testing', hours: 3, timesheetId: selectedTimesheet.id },
+    { id: '5', date: '2025-09-25', projectName: 'Homepage Development', typeOfWork: 'Documentation', description: 'Update docs', hours: 2, timesheetId: selectedTimesheet.id },
+  ] : []
+
   useEffect(() => {
     if (selectedTimesheet) {
-      fetchTasks()
+      setLoading(true)
+      // Simulate fetching with mock data
+      setTimeout(() => {
+        setTasks(mockTasks)
+        setLoading(false)
+      }, 500) // Simulate loading delay
+    } else {
+      setTasks([])
     }
-  }, [selectedTimesheet ,])
-
-  const fetchTasks = async () => {
-    if (!selectedTimesheet) return
-    
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/tasks?timesheetId=${selectedTimesheet.id}`)
-      const data = await response.json()
-
-      if (data.success) {
-        setTasks(data.data)
-      }
-    } catch (error) {
-      console.error('Error fetching tasks:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [selectedTimesheet])
 
   const handleAddNewTask = (date: string) => {
     const newTask = {
@@ -120,7 +118,7 @@ export function TimesheetListView({
 
   const groupedTasks = groupTasksByDate()
   const weekDates = [
-    '2024-01-21', '2024-01-22', '2024-01-23', '2024-01-24', '2024-01-25'
+    '2025-09-21', '2025-09-22', '2025-09-23', '2025-09-24', '2025-09-25'
   ]
 
   return (
