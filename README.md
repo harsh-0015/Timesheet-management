@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⏱️ TickTock Timesheets  
+*A simple SaaS-style Timesheet Management App built with Next.js 15, TypeScript, and NextAuth*
 
-## Getting Started
+---
 
-First, run the development server:
+## 📖 Overview
 
+Welcome to **TickTock Timesheet- Management**, a frontend technical assessment project simulating a real-world **Timesheet Management SaaS app**.  
+This project demonstrates clean code practices, modular structure, responsive UI, and seamless API integration — all built using **Next.js 15**, **TypeScript**, and **NextAuth**.
+
+
+
+---
+
+## 🚀 Features
+
+### 🔐 Login Page
+- Simple login with **dummy credentials** (shown on the UI).
+- On successful login, users are redirected to the **Dashboard**.
+- Token is securely stored via **NextAuth session**.
+- Built-in authentication handled by **NextAuth v4**.
+
+### 📊 Dashboard Page
+- Displays a **Timesheet Table View** with the following columns:
+  - 📅 Week #
+  - 🗓️ Date
+  - 🟢 Status
+  - ⚙️ Actions
+- Fully responsive and matches the provided Figma design.
+
+### ➕ Add New Entry (Bonus Feature)
+- Add/Edit modal to create new timesheet entries.
+- Data is **persisted to Local Storage** for demo purposes.
+- On page refresh, entries will reset (non-persistent beyond session).
+- Includes basic **form validation** and error handling.
+
+---
+
+## 🛠️ Tech Stack
+
+| Tech | Purpose |
+|------|---------|
+| ⚛️ **React 19** | Component-based UI |
+| 🔥 **Next.js 15** | Framework for SSR, routing, and API routes |
+| 🛡️ **NextAuth v4** | Authentication & session handling |
+| 📘 **TypeScript** | Type safety and clean code |
+| 🎨 **TailwindCSS v4** | Responsive and utility-first styling |
+| ✅ **ESLint** | Code linting and best practices enforcement |
+
+---
+
+## 📂 Project Structure
+
+timesheet-management/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── timesheets/
+│   │   │       └── route.ts
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx
+│   │   │   └── route.ts
+│   │   ├── layout.tsx
+│   │   └── login/
+│   │       └── page.tsx
+│   ├── components/
+│   │   ├── dashboard/
+│   │   │   ├── TimesheetTableView.tsx
+│   │   │   ├── TimesheetListView.tsx
+│   │   │   └── TaskModal.tsx
+│   │   └── layout/
+│   │       └── DashboardHeader.tsx
+│   ├── lib/
+│   │   ├── types.ts
+│   │   ├── mockData.ts
+│   │   └── constants.ts
+│   └── styles/
+│       └── globals.css
+├── public/
+│   └── favicon.ico
+├── .eslintrc.json
+├── next.config.js
+├── package.json
+├── tsconfig.json
+└── README.md
+
+// the above file folder structure may slightly vary from the actual it is for representation purpose , the decent file folder structure can be looked upon in repo
+
+yaml
+Copy code
+
+---
+
+## 📦 Installation & Setup
+
+### 1. Clone the repository
 ```bash
+git clone https://github.com/your-username/ticktock-timesheets.git
+cd ticktock-timesheets
+2. Install dependencies
+bash
+Copy code
+npm install
+3. Run the development server
+bash
+Copy code
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Your app will be available at:
+👉 http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🔑 Login Credentials (Demo)
+Use the dummy credentials displayed on the login screen to sign in.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+📡 API Integration
+All API calls are routed through internal API routes (/pages/api/*).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Authentication tokens are securely handled via NextAuth sessions.
 
-## Learn More
+Demo timesheet entries are fetched and displayed from these internal APIs.
 
-To learn more about Next.js, take a look at the following resources:
+🧪 Bonus (Optional Features)
+✅ Modal-based Add/Edit Timesheet Entry
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+✅ Responsive layout for mobile and desktop
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+✅ Basic form validation with error messages
 
-## Deploy on Vercel
+🧪 (Optional) Unit/component testing support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📐 Code Quality
+♻️ Reusable components and hooks for cleaner structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+📁 Modular directory organization
+
+✨ Clean naming conventions and separation of concerns
+
+🔍 Linting with ESLint for consistent style
+
+📘 Notes & Assumptions
+Dummy Authentication: This project uses static credentials and next-auth for demo purposes.
+
+Local Storage: New timesheet entries persist only for the current session. On page refresh, they are cleared.
+
+Backend: All data is handled via internal API routes with mock data for simplicity.
+
+📄 Evaluation Highlights
+Category	What’s Covered
+🎨 UI/UX	Clean, responsive design following Figma
+🧱 Code Quality	Modular, readable, and maintainable
+🔌 API Integration	Async handling, error states, session tokens
+🧠 State Management	React hooks for efficient state handling
+🧪 Testing (Optional)	Extendable for unit/component tests
+📚 Documentation	Detailed README and setup instructions
+
+📚 Time Spent
+~4-6 hours total, including planning, coding, styling, and documentation.
+
+👨‍💻 Author
+Developed with ❤️ by [Your Name] as part of the TenTwenty Frontend Technical Assessment 2025.
+
+📜 License
+This project is for technical assessment/demo purposes only and not intended for production use.
+
