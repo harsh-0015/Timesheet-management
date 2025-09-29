@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { TimesheetEntry, FilterOptions } from '@/lib/types'
 
 interface TimesheetTableViewProps {
@@ -8,15 +8,17 @@ interface TimesheetTableViewProps {
 }
 
 export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProps) {
-  // Mock data
-  const mockTimesheets: TimesheetEntry[] = [
-    { id: '1', weekNumber: 1, dateRange: '1-5 September 2025', status: 'COMPLETED', totalHours: 40, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: '2', weekNumber: 2, dateRange: '8-12 September 2025', status: 'INCOMPLETE', totalHours: 20, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: '3', weekNumber: 3, dateRange: '15-19 September 2025', status: 'MISSING', totalHours: 0, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: '4', weekNumber: 4, dateRange: '22-26 September 2025', status: 'COMPLETED', totalHours: 35, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: '5', weekNumber: 5, dateRange: '29 September - 3 October 2025', status: 'INCOMPLETE', totalHours: 15, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    // Add more entries as needed
-  ]
+  // Use useMemo to create mockTimesheets only once
+  const mockTimesheets: TimesheetEntry[] = useMemo(
+    () => [
+      { id: '1', weekNumber: 1, dateRange: '1-5 September 2025', status: 'COMPLETED', totalHours: 40, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', weekNumber: 2, dateRange: '8-12 September 2025', status: 'INCOMPLETE', totalHours: 20, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '3', weekNumber: 3, dateRange: '15-19 September 2025', status: 'MISSING', totalHours: 0, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '4', weekNumber: 4, dateRange: '22-26 September 2025', status: 'COMPLETED', totalHours: 35, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '5', weekNumber: 5, dateRange: '29 September - 3 October 2025', status: 'INCOMPLETE', totalHours: 15, tasks: [], createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    ],
+    [] // Empty dependency array means this runs once on mount
+  )
 
   const [timesheets, setTimesheets] = useState<TimesheetEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,19 +26,20 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
     status: 'ALL',
   })
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 5
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
   // Simulate data loading with mock data
   useEffect(() => {
     setLoading(true)
-    // Apply filters to mock data
     let filteredData = mockTimesheets
+
     if (filters.status && filters.status !== 'ALL') {
       filteredData = mockTimesheets.filter(ts => ts.status === filters.status)
     }
+
     setTimesheets(filteredData)
     setLoading(false)
-  }, [filters])
+  }, [filters, mockTimesheets])
 
   const getStatusBadge = (status: string) => {
     const baseClasses = 'px-3 py-1 rounded-full text-xs font-medium'
@@ -79,7 +82,7 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
     <div className="bg-white rounded-lg shadow">
       <div className="px-6 py-4 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Timesheets</h2>
-        
+
         {/* Filters */}
         <div className="flex space-x-4">
           <div>
@@ -91,13 +94,13 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
               value={filters.dateRange || ''}
               onChange={(e) => setFilters({ ...filters, dateRange: e.target.value })}
             >
-              <option value="" className="text-gray-900">All dates</option>
-              <option value="this-week" className="text-gray-900">This week</option>
-              <option value="last-week" className="text-gray-900">Last week</option>
-              <option value="this-month" className="text-gray-900">This month</option>
+              <option value="">All dates</option>
+              <option value="this-week">This week</option>
+              <option value="last-week">Last week</option>
+              <option value="this-month">This month</option>
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Status
@@ -107,10 +110,10 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
               value={filters.status || 'ALL'}
               onChange={(e) => setFilters({ ...filters, status: e.target.value as never })}
             >
-              <option value="ALL" className="text-gray-900">All statuses</option>
-              <option value="COMPLETED" className="text-gray-900">Completed</option>
-              <option value="INCOMPLETE" className="text-gray-900">Incomplete</option>
-              <option value="MISSING" className="text-gray-900">Missing</option>
+              <option value="ALL">All statuses</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="INCOMPLETE">Incomplete</option>
+              <option value="MISSING">Missing</option>
             </select>
           </div>
         </div>
@@ -121,18 +124,10 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Week #
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Week #</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -150,28 +145,16 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {timesheet.status === 'INCOMPLETE' ? (
-                    <button
-                      onClick={() => onSelectTimesheet(timesheet)}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
-                    >
-                      Update
-                    </button>
-                  ) : timesheet.status === 'MISSING' ? (
-                    <button
-                      onClick={() => onSelectTimesheet(timesheet)}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
-                    >
-                      Create
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => onSelectTimesheet(timesheet)}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
-                    >
-                      View
-                    </button>
-                  )}
+                  <button
+                    onClick={() => onSelectTimesheet(timesheet)}
+                    className="text-blue-600 hover:text-blue-900 font-medium"
+                  >
+                    {timesheet.status === 'INCOMPLETE'
+                      ? 'Update'
+                      : timesheet.status === 'MISSING'
+                      ? 'Create'
+                      : 'View'}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -186,15 +169,13 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
             className="px-2 py-1 border border-gray-300 rounded text-sm bg-white text-gray-900"
             value={itemsPerPage}
             onChange={(e) => {
-              // Update itemsPerPage and reset to page 1
-              const newItemsPerPage = parseInt(e.target.value, 10)
-              setCurrentPage(1) // Reset to first page
-              // Here you would typically update state or re-filter, but for now, we'll keep it static
+              setItemsPerPage(parseInt(e.target.value, 10))
+              setCurrentPage(1)
             }}
           >
-            <option value={5} className='text-gray-900'>5 per page</option>
-            <option value={10} className='text-gray-900'>10 per page</option>
-            <option value={20} className='text-gray-900'>20 per page</option>
+            <option value={5}>5 per page</option>
+            <option value={10}>10 per page</option>
+            <option value={20}>20 per page</option>
           </select>
         </div>
 
@@ -206,7 +187,7 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
           >
             Previous
           </button>
-          
+
           {[...Array(totalPages)].map((_, index) => {
             const page = index + 1
             return (
@@ -234,7 +215,6 @@ export function TimesheetTableView({ onSelectTimesheet }: TimesheetTableViewProp
         </div>
       </div>
 
-      {/* Footer */}
       <div className="px-6 py-3 bg-gray-50 text-center text-xs text-gray-500 border-t">
         © 2024 tentwenty. All rights reserved.
       </div>
