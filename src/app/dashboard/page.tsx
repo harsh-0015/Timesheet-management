@@ -17,11 +17,17 @@ export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [modalDefaultDate, setModalDefaultDate] = useState<string>('')
-  const [tasks, setTasks] = useState<Task[]>(() => {
-    // Load tasks from localStorage on mount, specific to timesheetId
+  const [tasks, setTasks] = useState<Task[]>([])
+
+  // Load tasks from localStorage after component mounts (client-side only)
+  useEffect(() => {
     const savedTasks = localStorage.getItem(`tasks_${selectedTimesheet?.id || 'default'}`)
-    return savedTasks ? JSON.parse(savedTasks) : []
-  })
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks))
+    } else {
+      setTasks([])
+    }
+  }, [selectedTimesheet?.id])
 
   useEffect(() => {
     if (status === 'loading') return
@@ -29,10 +35,7 @@ export default function DashboardPage() {
       router.push('/login')
       return
     }
-    // Update tasks when selectedTimesheet changes
-    const savedTasks = localStorage.getItem(`tasks_${selectedTimesheet?.id || 'default'}`)
-    setTasks(savedTasks ? JSON.parse(savedTasks) : [])
-  }, [session, status, router, selectedTimesheet])
+  }, [session, status, router])
 
   const handleSelectTimesheet = (timesheet: TimesheetEntry) => {
     setSelectedTimesheet(timesheet)
@@ -70,13 +73,12 @@ export default function DashboardPage() {
       // Add new task
       const newTask: Task = {
         ...taskData,
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9) // Unique ID
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
       }
       newTasks = [...tasks, newTask]
     }
     setTasks(newTasks)
     localStorage.setItem(`tasks_${selectedTimesheet?.id || 'default'}`, JSON.stringify(newTasks))
-    // No need for try-catch since it's client-side
   }
 
   if (status === 'loading') {
@@ -112,7 +114,6 @@ export default function DashboardPage() {
         )}
       </main>
 
-      {/* Task Modal */}
       <TaskModal
         isOpen={isModalOpen}
         onClose={() => {
