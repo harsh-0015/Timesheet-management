@@ -34,6 +34,12 @@ This project demonstrates clean code practices, modular structure, responsive UI
 - On page refresh, entries will reset (non-persistent beyond session).
 - Includes basic **form validation** and error handling.
 
+## Extra Features Implemented
+- Task management system within each timesheet entry
+- Each timesheet can contain multiple tasks
+- Tasks are persisted in localStorage per timesheet
+- Full CRUD operations for tasks (Create, Read, Update, Delete)
+
 ---
 
 ## 🛠️ Tech Stack
